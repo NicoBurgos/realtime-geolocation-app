@@ -20,7 +20,7 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map)
 
 // Initialize marker
-let truckMarker = L.marker([0, 0], { icon: truckIcon, draggable: true })
+let truckMarker = L.marker([0, 0], { icon: truckIcon, draggable: false })
 	.addTo(map)
 	.bindPopup('Truck')
 
@@ -34,14 +34,6 @@ function onLocationFound(e) {
 	map.flyTo(truckCoords, 16)
 	//emit coords with socket
 	emitCoords()
-
-	//Allow drag marker and update coords
-	truckMarker.on('dragend', function () {
-		truckCoords = truckMarker.getLatLng()
-		truckMarker.setLatLng(truckCoords).addTo(map)
-		//emit coords with socket
-		socket.emit('location', truckCoords)
-	})
 }
 
 function onLocationError(e) {
@@ -60,6 +52,5 @@ function trackLocation() {
 map.on('locationfound', onLocationFound)
 map.on('locationerror', onLocationError)
 
-//trackLocation() //delete when the interval is activated
 //Update location every 5 seconds
 setInterval(trackLocation, 5000)
